@@ -1,11 +1,15 @@
 import React from 'react'
-
+import { Link, useNavigate } from 'react-router-dom'
 const HeaderComponent = () => {
-  return (
+  const navigate = useNavigate();
+    return (
     <div>
         <header>
             <nav className='navbar navbar-dark bg-dark'>
-<a className='navbar-brand ' href="http://www.shivaprasadofficial.com">Employee Management System </a>
+
+<Link to="/employees" className='navbar-brand'>
+Employee Managment System
+</Link>
             </nav>
         </header>
     </div>
