@@ -1,5 +1,5 @@
-import React, { useState } from 'react'
-import { createEmployee } from '../services/EmployeeService'
+import React, { useEffect, useState } from 'react'
+import { createEmployee, getEmployee, updateEmployee } from '../services/EmployeeService'
 import { useNavigate,useParams} from 'react-router-dom'
 
 const EmployeeComponent = () => {
@@ -19,23 +19,60 @@ const EmployeeComponent = () => {
 
 
   const navigator = useNavigate();
+
+
+
+useEffect(() => {
+
+if(id){
+  getEmployee(id).then((response) => {
+    setFirstName(response.data.firstName);
+    setLastName(response.data.lastName);
+    setEmail(response.data.email);
+  }).catch(error =>{
+    console.error(error);
+  })
+}
+
+
+},[id])
+
+
 const handleFirstName = (e) =>  setFirstName(e.target.value);
 
 const handleLastName = (e) => setLastName(e.target.value);
 
 const handleEmail = (e) =>  setEmail(e.target.value);
 
-function saveEmployee(e){
+
+
+
+function saveOrUpdateEmployee(e){
 e.preventDefault();
 
 if(validateForm()){
-  const employee ={firstName,lastName,email}
+const employee ={firstName,lastName,email}
 console.log(employee)
 
-createEmployee(employee).then((response) => {
+if(id){
+updateEmployee(id,employee).then((response)=>{
+  console.log(response.data);
+  navigator('/employees');
+}).catch(error => {
+  console.error(error);
+})
+}else{
+  createEmployee(employee).then((response) => {
   console.log(response.data);
   navigator('/employees')
-} )
+} ).catch(error=>{
+  console.error(error);
+})
+}
+
+  
+
+
 }
 
 
@@ -137,7 +174,7 @@ if(id){
   <div className='invalid-feedback'>{errors.email}</div>
 )}
               </div>
-              <button className='btn btn-success' onClick={saveEmployee}>Submit</button>
+              <button className='btn btn-success' onClick={saveOrUpdateEmployee}>Submit</button>
             </form>
 
           </div>
